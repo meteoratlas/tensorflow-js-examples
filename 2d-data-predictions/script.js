@@ -53,7 +53,13 @@ function createModel() {
     const model = tf.sequential();
 
     // Add a single hidden layer
-    model.add(tf.layers.dense({ inputShape: [1], units: 1, useBias: true }));
+    // observation: increasing the units to 4 or 8 makes the graph level out ~30 epochs.
+    // setting it to 50 makes it even out around ~15 epochs
+    model.add(tf.layers.dense({ inputShape: [1], units: 20, useBias: true }));
+
+    // extra credit: new hidden layer using a sigmoid activation
+    model.add(tf.layers.dense({ units: 30, activation: "sigmoid" }));
+    model.add(tf.layers.dense({ units: 30, activation: "sigmoid" }));
 
     // Add an output layer
     model.add(tf.layers.dense({ units: 1, useBias: true }));
@@ -117,6 +123,7 @@ async function trainModel(model, inputs, labels) {
     });
 
     const batchSize = 32;
+    // observation: in this case, the graph tends to flatten out ~100 epochs using default values
     const epochs = 50;
 
     return await model.fit(inputs, labels, {
